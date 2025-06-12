@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Employee Analytics</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>Employee Analytics Dashboard</h1>
+
+  <h2>Employees per Department (Pie Chart)</h2>
+  <canvas id="pieChart" width="400" height="400"></canvas>
+
+  <h2>Monthly Attendance Overview (Bar Chart)</h2>
+  <canvas id="barChart" width="600" height="400"></canvas>
+
+<script>
+async function fetchData(url) {
+  const response = await fetch(url);
+  return await response.json();
+}
+
+async function drawPieChart() {
+  const data = await fetchData('/api/charts/employees-per-department/');
+  const ctx = document.getElementById('pieChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: data.labels,
+      datasets: [{
+        data: data.counts,
+        backgroundColor: [
+          '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+          '#FF9F40', '#E7E9ED', '#8AFF33'
+        ],
+      }]
+    },
+  });
+}
+
+async function drawBarChart() {
+  const data = await fetchData('/api/charts/monthly-attendance/');
+  const ctx = document.getElementById('barChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: data.labels,
+      datasets: [{
+        label: 'Attendance Records',
+        data: data.counts,
+        backgroundColor: '#36A2EB'
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          stepSize: 1,
+        }
+      }
+    }
+  });
+}
+
+drawPieChart();
+drawBarChart();
+</script>
+
+</body>
+</html>
+<!-- This HTML file is used to render the employee analytics dashboard with charts -->

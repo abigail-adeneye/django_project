@@ -1,0 +1,16 @@
+version: '3'
+services:
+  web:                     # Django app service
+    build: .               # Build image from Dockerfile in current directory
+    env_file: .env         # Load environment variables from your .env file
+    ports: ['8000:8000']   # Expose port 8000 (container) to port 8000 (host)
+    depends_on: ['db']     # Wait for 'db' service to be ready before starting
+
+  db:                      # PostgreSQL database service
+    image: postgres:17.5     # Use official Postgres image
+    env_file: .env         # Use same .env for DB credentials
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Persist DB data on your disk
+
+volumes:
+  pgdata:                  # Named volume to persist PostgreSQL data
